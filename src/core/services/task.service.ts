@@ -11,8 +11,8 @@ export class TaskService {
 
   constructor() { }
 
-  getTasks() {
-    return this.http.get(`${this.apiURL}/task`);
+  getTasks(query: any = '') {
+    return this.http.get(`${this.apiURL}/task/search?query=${query}`);
   }
 
   createTask(data: any){

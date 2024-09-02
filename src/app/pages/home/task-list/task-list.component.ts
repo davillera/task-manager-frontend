@@ -45,8 +45,8 @@ export class TaskListComponent implements OnInit {
     this.initializeCreateTaskForm()
   }
 
-  getTasks() {
-    this.taskService.getTasks().subscribe({
+  getTasks(query?: any) {
+    this.taskService.getTasks(query).subscribe({
       next: (data: any) => {
         this.tasks = data;
         console.log('Tareas obtenidas:', this.tasks);
@@ -55,6 +55,14 @@ export class TaskListComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err });
       }
     });
+  }
+
+  searchTask(event: any) {
+    const inputElement = event.target as HTMLInputElement;
+    const query = inputElement.value;
+
+    // Llama al servicio para buscar tareas según el query
+    this.getTasks(query);
   }
 
   createTask() {
@@ -145,4 +153,6 @@ export class TaskListComponent implements OnInit {
     this.createTaskForm.reset()
     this.initializeCreateTaskForm()
   }
+
+
 }
