@@ -1,0 +1,23 @@
+version: 1
+backend:
+  phases:
+    build:
+      commands:
+        - echo "Backend build skipped"
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - nvm install 18.19.1 # Instala la versión requerida de Node.js
+        - nvm use 18.19.1     # Usa la versión requerida de Node.js
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: dist/task-manager-frontend/browser
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
