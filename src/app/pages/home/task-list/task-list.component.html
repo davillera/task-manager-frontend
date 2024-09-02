@@ -1,0 +1,72 @@
+<div class="flex justify-center h-screen bg-gray-900">
+  <div class="space-y-4 p-6 bg-gray-900 max-w-4xl w-full">
+
+    <!-- Buscador -->
+    <div class="flex">
+      <input
+        pInputText
+        type="text"
+        placeholder="Buscar tareas..."
+        class="w-full p-3 bg-gray-800 text-white border-none rounded focus:ring focus:ring-blue-500"/>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        class="bg-gray-800 p-2 ml-3"
+        (click)="isCreateTaskModal = true"
+      >
+      </button>
+    </div>
+
+    <!-- Lista de Tareas -->
+    <div *ngFor="let task of tasks">
+      <app-task-item
+        [task]="task"
+        (taskCompleted)="onTaskCompleted($event)"
+        (taskDeleted)="onTaskDeleted($event)"
+        (taskEdit)="onTaskEdit($event)"
+      ></app-task-item>
+    </div>
+  </div>
+</div>
+
+<p-dialog header="Agregar Nueva Tarea" [(visible)]="isCreateTaskModal" [modal]="true" [style]="{width: '30vw'}" [baseZIndex]="10000" class="custom-modal">
+  <form [formGroup]="createTaskForm">
+    <div class="p-fluid">
+      <div class="field mb-4">
+        <label for="title" class="block text-sm font-medium text-blue-400 mb-1">Título</label>
+        <input id="title" type="text" pInputText formControlName="title" class="w-full p-3 bg-gray-800 text-white border border-gray-700 rounded focus:ring focus:ring-blue-500"/>
+        <div *ngIf="createTaskForm.get('title')?.invalid && createTaskForm.get('title')?.touched" class="text-red-500 text-sm mt-1">
+          <span *ngIf="createTaskForm.get('title')?.errors?.['required']">El título es requerido.</span>
+        </div>
+      </div>
+      <div class="field mb-4">
+        <label for="description" class="block text-sm font-medium text-blue-400 mb-1">Descripción</label>
+        <textarea id="description" rows="3" pInputTextarea formControlName="description" class="w-full p-3 bg-gray-800 text-white border border-gray-700 rounded focus:ring focus:ring-blue-500"></textarea>
+        <div *ngIf="createTaskForm.get('description')?.invalid && createTaskForm.get('description')?.touched" class="text-red-500 text-sm mt-1">
+          <span *ngIf="createTaskForm.get('description')?.errors?.['required']">La descripción es requerida.</span>
+        </div>
+      </div>
+    </div>
+
+    <p-footer class="flex">
+      <button
+        type="button"
+        pButton
+        icon="pi pi-times"
+        label="Cancelar"
+        class="p-button-text text-blue-400"
+        (click)="isCreateTaskModal = false"
+      ></button>
+      <button
+        type="submit"
+        pButton
+        icon="pi pi-check"
+        label="Guardar"
+        (click)="generateTask()"
+        class="text-white bg-blue-600 hover:bg-blue-700 ml-4 p-2"
+        [disabled]="createTaskForm.invalid"
+      ></button>
+    </p-footer>
+  </form>
+</p-dialog>

@@ -1,0 +1,45 @@
+<div class="p-6 bg-gray-800 rounded-lg shadow-lg flex flex-col md:flex-row items-start md:items-center">
+  <div class="flex-1">
+    <h2 class="text-xl font-bold text-white mb-4">{{ task.title }}</h2>
+    <p class="text-blue-400">{{ task.description }}</p>
+    <p class="text-sm text-blue-400 mt-2">Creado el: {{ task.createdAt | date:'medium' }}</p>
+    <p class="text-sm text-blue-400">Actualizado el: {{ task.updatedAt | date:'medium' }}</p>
+    <p class="text-sm text-blue-400">
+      Completado:
+      <span [ngClass]="task.completed ? 'text-green-500' : 'text-red-500'">
+        {{ task.completed ? 'Sí' : 'No' }}
+      </span>
+    </p>
+  </div>
+
+  <div class="md:ml-4 mt-4 md:mt-0 flex-shrink-0 flex items-center space-x-2">
+    <img *ngIf="task.imageUrl; else noImage" [src]="task.imageUrl" alt="Imagen de la tarea" class="w-32 h-32 object-cover rounded-lg">
+    <ng-template #noImage>
+      <p class="text-blue-400">Sin imagen</p>
+    </ng-template>
+
+    <!-- Botón para marcar como completado/no completado -->
+    <button
+      pButton
+      pRipple
+      [icon]="task.completed ? 'pi pi-times' : 'pi pi-check'"
+      class="p-button-rounded w-12 h-12 bg-blue-600 text-white hover:bg-blue-700"
+      (click)="toggleCompleteTask(task)"></button>
+
+    <!-- Botón para editar la tarea -->
+    <button
+      pButton
+      pRipple
+      icon="pi pi-pencil"
+      class="p-button-rounded w-12 h-12 bg-yellow-500 text-white hover:bg-yellow-600"
+      (click)="editTask(task)"></button>
+
+    <!-- Botón para eliminar la tarea -->
+    <button
+      pButton
+      pRipple
+      icon="pi pi-trash"
+      class="p-button-rounded w-12 h-12 bg-red-600 text-white hover:bg-red-700"
+      (click)="deleteTask(task)"></button>
+  </div>
+</div>
