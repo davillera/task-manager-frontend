@@ -1,23 +1,23 @@
 version: 1
-backend:
-  phases:
-    build:
-      commands:
-        - echo "Backend build skipped"
 frontend:
   phases:
     preBuild:
       commands:
-        - nvm install 18.19.1 # Instala la versión requerida de Node.js
-        - nvm use 18.19.1     # Usa la versión requerida de Node.js
+        - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
+        - export NVM_DIR="$HOME/.nvm"
+        - [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        - nvm install 18.19.1
+        - nvm use 18.19.1
+        - node -e "console.log('Running Node.js ' + process.version)"
         - npm ci
     build:
       commands:
         - npm run build
   artifacts:
-    baseDirectory: dist/task-manager-frontend/browser
+    baseDirectory: dist/task-manager-frontend
     files:
       - '**/*'
   cache:
     paths:
       - node_modules/**/*
+
