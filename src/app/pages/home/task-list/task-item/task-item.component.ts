@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {Component, Input, Output, EventEmitter, inject} from '@angular/core';
 import {DatePipe, NgClass, NgIf} from "@angular/common";
 import {ButtonDirective} from "primeng/button";
 import {Ripple} from "primeng/ripple";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-task-item',
@@ -17,6 +18,8 @@ import {Ripple} from "primeng/ripple";
   styleUrls: ['./task-item.component.scss']
 })
 export class TaskItemComponent {
+
+  private router = inject(Router);
   @Input() task!: {
     id: number;
     title: string;
@@ -27,6 +30,10 @@ export class TaskItemComponent {
     createdAt: string;
     updatedAt: string;
   };
+
+  goToDetail() {
+    this.router.navigate(['/home/task', this.task.id]);
+  }
 
   @Output() taskCompleted = new EventEmitter<number>();
   @Output() taskDeleted = new EventEmitter<number>();

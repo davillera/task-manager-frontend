@@ -52,7 +52,7 @@ export class TaskListComponent implements OnInit {
         console.log('Tareas obtenidas:', this.tasks);
       },
       error: (err) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.statusText });
       }
     });
   }

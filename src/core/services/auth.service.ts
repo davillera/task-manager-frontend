@@ -19,4 +19,7 @@ export class AuthService {
   register(data: { email: string, password: string }) {
     return this.http.post(`${this.apiURL}/users/register`, data);
   }
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('token');
+  }
 }
