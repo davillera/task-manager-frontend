@@ -9,6 +9,7 @@ import { CheckboxModule } from "primeng/checkbox";
 import { ButtonDirective } from "primeng/button";
 import { InputTextModule } from "primeng/inputtext";
 import { InputTextareaModule } from "primeng/inputtextarea";
+import {ImageService} from "../../../../core/services/image.service";
 
 @Component({
   selector: 'app-task-list',
@@ -31,6 +32,7 @@ export class TaskListComponent implements OnInit {
 
   private taskService = inject(TaskService);
   private messageService = inject(MessageService);
+  private imageService = inject(ImageService);
 
   tasks: any[] = []; // Variable para almacenar las tareas
   editMode: boolean = false;
@@ -66,22 +68,51 @@ export class TaskListComponent implements OnInit {
   }
 
   createTask() {
-    this.taskService.createTask(this.createTaskForm.value).subscribe({
-      next: () => {
+    const taskData = {
+      title: this.createTaskForm.get('title')?.value,
+      description: this.createTaskForm.get('description')?.value,
+      userId: this.createTaskForm.get('userId')?.value,
+    };
+
+    this.taskService.createTask(taskData).subscribe({
+      next: (response: any) => {
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Tarea creada con éxito' });
+        this.uploadImage(response.id);
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: err });
       },
       complete: () => {
-        this.getTasks();
-        this.resetForm()
+        this.getTasks()
+        this.resetForm();
       }
     });
   }
 
+  uploadImage(taskId: number) {
+    const formData = new FormData();
+    const imageFile = this.createTaskForm.get('image')?.value;
+
+    if (imageFile) {
+      formData.append('file', imageFile);
+      formData.append('taskId', taskId.toString());
+
+      this.imageService.uploadImage(formData).subscribe({
+        next: () => {
+          this.getTasks();
+        },
+        error: () => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: "Error Al Subir la imagen" });
+        }
+      });
+    }
+  }
+
+
+
   updateTask(data: any) {
     console.log(data)
+    this.uploadImage(data.id);
     this.taskService.updateTask(data).subscribe({
       next: () => {
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Tarea actualizada con éxito' });
@@ -109,7 +140,6 @@ export class TaskListComponent implements OnInit {
   }
 
   generateTask() {
-    console.log(this.createTaskForm.value, this.editMode)
     if(!this.editMode){
       this.createTask();
     } else {
@@ -117,23 +147,35 @@ export class TaskListComponent implements OnInit {
     }
   }
 
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.createTaskForm.patchValue({ image: file });
+    }
+  }
+
+
   initializeCreateTaskForm() {
     this.createTaskForm = this.formBuilder.group({
       title: ['', [Validators.required]],
       description: ['', [Validators.required]],
       userId: [sessionStorage.getItem("user_id")],
-      id: []
+      id: [],
+      image: [null]  // Campo para la imagen
     });
+
   }
 
   onTaskCompleted(data: any) {
     const updatedData = {
       ...data,
-      completed: !data.completed  // Toggle de la propiedad completed
+      completed: !data.completed
     };
 
+    console.log(updatedData)
+
     this.updateTask(updatedData)
-    // console.log(this.updateTask)
+
   }
 
   onTaskEdit(task: any) {
@@ -153,6 +195,7 @@ export class TaskListComponent implements OnInit {
     this.createTaskForm.reset()
     this.initializeCreateTaskForm()
   }
+
 
 
 }

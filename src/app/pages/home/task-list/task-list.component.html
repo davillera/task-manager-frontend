@@ -48,6 +48,19 @@
           <span *ngIf="createTaskForm.get('description')?.errors?.['required']">La descripción es requerida.</span>
         </div>
       </div>
+      <div class="field mb-4">
+        <label for="image" class="block text-sm font-medium text-blue-400 mb-1">Subir Imagen</label>
+        <input
+          pInputText
+          id="image"
+          type="file"
+          formControlName="image"
+          accept="image/*"
+          class="w-full p-3 bg-gray-800 text-white border border-gray-700 rounded focus:ring focus:ring-blue-500"
+          (change)="onFileSelected($event)"
+        />
+
+      </div>
     </div>
 
     <p-footer class="flex">
@@ -71,3 +84,4 @@
     </p-footer>
   </form>
 </p-dialog>
+

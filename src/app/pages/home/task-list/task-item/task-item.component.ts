@@ -1,8 +1,10 @@
-import {Component, Input, Output, EventEmitter, inject} from '@angular/core';
+import {Component, Input, Output, EventEmitter, inject, OnInit} from '@angular/core';
 import {DatePipe, NgClass, NgIf} from "@angular/common";
 import {ButtonDirective} from "primeng/button";
 import {Ripple} from "primeng/ripple";
 import {Router} from "@angular/router";
+import {ImageService} from "../../../../../core/services/image.service";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-task-item',
@@ -17,19 +19,36 @@ import {Router} from "@angular/router";
   ],
   styleUrls: ['./task-item.component.scss']
 })
-export class TaskItemComponent {
+export class TaskItemComponent implements OnInit{
 
   private router = inject(Router);
+  private imageService = inject(ImageService);
+  private messageService = inject(MessageService)
   @Input() task!: {
     id: number;
     title: string;
     description: string;
     completed: boolean;
-    imageUrl: string | null;
+    image: any
     userId: number;
     createdAt: string;
     updatedAt: string;
   };
+
+  ngOnInit() {
+    this.getImage(this.task.id)
+  }
+
+  getImage(taskId: number) {
+    this.imageService.getImage(taskId).subscribe({
+      next: (data: any) => {
+        this.task.image = data[data.length - 1]
+      },
+      error: (err: any) => {
+        this.task.image = ""
+      }
+    })
+  }
 
   goToDetail() {
     this.router.navigate(['/home/task', this.task.id]);
@@ -49,5 +68,16 @@ export class TaskItemComponent {
 
   deleteTask(task: any) {
     this.taskDeleted.emit(task.id);
+  }
+
+  deleteImage(id: number) {
+    this.imageService.deleteImage(id).subscribe({
+      next: () => {
+
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: "Error al borrar la imagen" });
+      }
+    })
   }
 }

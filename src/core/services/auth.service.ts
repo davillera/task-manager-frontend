@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
 export class AuthService {
 
   private http = inject(HttpClient);
-  private apiURL = "http://localhost:3000"
+  private apiURL = environment.apiUrl
 
   constructor() { }
 

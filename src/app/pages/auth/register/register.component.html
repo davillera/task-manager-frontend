@@ -81,14 +81,17 @@
         type="submit"
         pButton
         label="Registrarse"
-        class="w-full p-3 text-white bg-blue-600 rounded hover:bg-blue-700 mb-4"></button>
+        class="w-full p-3 text-white bg-blue-600 rounded hover:bg-blue-700 mb-4"
+        (click)="register()"
+      ></button>
 
       <button
         type="button"
         pButton
         label="Ir al Login"
         class="w-full p-3 text-white bg-gray-600 rounded hover:bg-gray-700"
-        (click)="goToLogin()"></button>
+        (click)="goToLogin()"
+      ></button>
     </div>
   </form>
 </div>

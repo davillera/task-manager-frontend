@@ -1,5 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -7,27 +8,27 @@ import {HttpClient} from "@angular/common/http";
 export class TaskService {
 
   private http = inject(HttpClient);
-  private apiURL = "http://localhost:3000"
+  private apiURL = environment.apiUrl
 
   constructor() { }
 
   getTasks(query: any = '') {
-    return this.http.get(`${this.apiURL}/task/search?query=${query}`);
+    return this.http.get(`${this.apiURL}/tasks/search?query=${query}`);
   }
 
   createTask(data: any){
-    return this.http.post(`${this.apiURL}/task`, data);
+    return this.http.post(`${this.apiURL}/tasks`, data);
   }
 
   updateTask(data: any){
-    return this.http.put(`${this.apiURL}/task/${data.id}`, data);
+    return this.http.put(`${this.apiURL}/tasks/${data.id}`, data);
   }
 
   deleteTask(id: number){
-    return this.http.delete(`${this.apiURL}/task/${id}`);
+    return this.http.delete(`${this.apiURL}/tasks/${id}`);
   }
 
   getTaskById(taskId: number) {
-    return this.http.get(`${this.apiURL}/task/${taskId}`);
+    return this.http.get(`${this.apiURL}/tasks/${taskId}`);
   }
 }

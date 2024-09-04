@@ -7,6 +7,7 @@ import { ButtonDirective } from "primeng/button";
 import {AuthService} from "../../../../core/services/auth.service";
 
 import { MessageService } from 'primeng/api';
+import {ToastModule} from "primeng/toast";
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,8 @@ import { MessageService } from 'primeng/api';
     ReactiveFormsModule,
     FloatLabelModule,
     InputTextModule,
-    ButtonDirective
+    ButtonDirective,
+    ToastModule
   ],
   providers: [
     MessageService
@@ -45,15 +47,15 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/home']);
       },
       error: (err) =>{
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.statusText });
       }
     })
   }
 
   initializeLoginForm() {
     this.loginForm = this.formBuilder.group({
-      email: ['test@mail.com', [Validators.required, Validators.email]],
-      password: ['12341234', [Validators.required, Validators.minLength(6)]]
+      email: ['davillera@mail.com', [Validators.required, Validators.email]],
+      password: ['123456', [Validators.required, Validators.minLength(6)]]
     });
   }
 

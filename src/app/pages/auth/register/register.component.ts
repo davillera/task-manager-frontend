@@ -5,6 +5,8 @@ import { FloatLabelModule } from "primeng/floatlabel";
 import { InputTextModule } from "primeng/inputtext";
 import { ButtonDirective } from "primeng/button";
 import {NgClass, NgIf} from "@angular/common";
+import {AuthService} from "../../../../core/services/auth.service";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-register',
@@ -23,6 +25,8 @@ import {NgClass, NgIf} from "@angular/common";
 export class RegisterComponent implements OnInit {
 
   public registerForm: FormGroup = new FormGroup({});
+  private authService = inject(AuthService);
+  private messageService = inject(MessageService)
   public passwordStrength: number = 0;
   public showPasswordStrength: boolean = false;
   private formBuilder = inject(FormBuilder);
@@ -40,6 +44,25 @@ export class RegisterComponent implements OnInit {
     }, {
       validators: this.passwordMatchValidator
     });
+  }
+
+  register(){
+    const formValue = this.registerForm.value;
+
+    const registerData = {
+      email: formValue.email,
+      password: formValue.password
+    };
+
+    this.authService.register(registerData).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Usuario Creado Con Éxito' });
+        this.registerForm.reset()
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Success', detail: 'Error al crear el Usuario' });
+      }
+    })
   }
 
   passwordMatchValidator(form: FormGroup) {
